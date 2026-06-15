@@ -1,26 +1,15 @@
 (function () {
   const currentScript = document.currentScript;
 
-  const BOT_ID = currentScript.getAttribute("data-bot-id");
+  const BOT_ID =
+    (currentScript && currentScript.getAttribute
+      ? currentScript.getAttribute("data-bot-id")
+      : null) || window.__CHATBOT_BOT_ID__;
 
-  const getPublicBaseUrl = () => {
-    try {
-      const cfg = window.__CHATBOT_CONFIG__;
-      if (cfg && cfg.publicBaseUrl) return cfg.publicBaseUrl;
-    } catch (e) {}
 
-    // Fallback: infer from the script src that loaded this widget
-    const s = document.currentScript || currentScript;
-    if (s && s.src) {
-      try {
-        return new URL(".", s.src).origin;
-      } catch (e) {}
-    }
 
-    return "";
-  };
 
-  const PUBLIC_BASE_URL = getPublicBaseUrl();
+  const PUBLIC_BASE_URL = "http://localhost:8000";
 
   const API_BASE = PUBLIC_BASE_URL
     ? PUBLIC_BASE_URL + "/api/public/bot/"
@@ -50,11 +39,7 @@
     const link = document.createElement("link");
     link.rel = "stylesheet";
 
-    const href = window.__CHATBOT_CONFIG__?.publicBaseUrl
-      ? window.__CHATBOT_CONFIG__.publicBaseUrl + "/widget.css"
-      : PUBLIC_BASE_URL
-        ? PUBLIC_BASE_URL + "/widget.css"
-        : "http://localhost:8000/widget.css";
+    const href = "http://localhost:8000/widget/widget.css";
 
     link.href = href;
     document.head.appendChild(link);
